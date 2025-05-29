@@ -10,11 +10,13 @@
       background-color: #eef2f7;
       text-align: center;
       transition: background-color 0.5s ease;
+      overflow-x: hidden;
     }
     h1 {
       margin-top: 15vh;
       font-size: 3.5em;
       color: #1a202c;
+      animation: fadeInDown 1s ease;
     }
     #slogan {
       font-style: italic;
@@ -39,9 +41,37 @@
       background-color: #1e40af;
     }
     #quote {
-      margin-top: 3em;
-      font-size: 1.1em;
+      margin-top: 2em;
+      font-size: 1.2em;
       color: #2d3748;
+    }
+    #meme {
+      font-size: 0.9em;
+      margin-top: 1em;
+      color: #718096;
+    }
+    .emoji {
+      font-size: 3em;
+      margin-top: 1em;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
     }
   </style>
 </head>
@@ -51,6 +81,12 @@
   <button onclick="redirectToRandomPolitician()">Znajdź Polityka</button>
 
   <div id="quote"></div>
+  <div id="meme"></div>
+  <div class="emoji">🎩</div>
+
+  <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
+
+  <canvas id="confettiCanvas"></canvas>
 
   <script>
     const politicians = [
@@ -66,7 +102,17 @@
       "„Obiecałem i słowa prawie dotrzymałem!”",
       "„Mój plan to nie mieć planu!”",
       "„Nie pytaj co kraj może zrobić dla ciebie, tylko jak się stąd wyprowadzić.”",
-      "„Kampania wyborcza? A to już?”"
+      "„Kampania wyborcza? A to już?”",
+      "„Budżet się sam nie wyda!”",
+      "„Obiecanki cacanki, a głosy się liczą!”",
+      "„Mówili, że się nie da, to obiecałem dwa razy więcej.”"
+    ];
+
+    const memes = [
+      "Kiedy nie wiesz, co powiedzieć, ale masz ładny garnitur.",
+      "Wygląda na reformę, pachnie na kryzys.",
+      "Zarządzam – czyli robię poważną minę i klikam w Excela.",
+      "Najpierw obietnice, potem amnezja."
     ];
 
     const bgColors = ["#fef3c7", "#d1fae5", "#e0e7ff", "#fcd34d", "#fca5a5", "#c4b5fd"];
@@ -74,15 +120,73 @@
     function redirectToRandomPolitician() {
       const randomPolitician = politicians[Math.floor(Math.random() * politicians.length)];
       const randomQuote = funnyQuotes[Math.floor(Math.random() * funnyQuotes.length)];
+      const randomMeme = memes[Math.floor(Math.random() * memes.length)];
       const randomColor = bgColors[Math.floor(Math.random() * bgColors.length)];
-      
+
       document.getElementById("quote").textContent = randomQuote;
+      document.getElementById("meme").textContent = randomMeme;
       document.body.style.backgroundColor = randomColor;
+
+      document.getElementById("clickSound").play();
+      launchConfetti();
 
       setTimeout(() => {
         window.location.href = `https://en.wikipedia.org/wiki/${randomPolitician}`;
-      }, 1500); // Daje czas na zobaczenie cytatu i zmianę tła
+      }, 2500);
     }
+
+    function launchConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const confetti = Array.from({ length: 100 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 100 + 10,
+        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+        tilt: Math.random() * 10 - 10,
+        tiltAngleIncremental: Math.random() * 0.1 + 0.05,
+        tiltAngle: 0
+      }));
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confetti.forEach(c => {
+          ctx.beginPath();
+          ctx.lineWidth = c.r / 2;
+          ctx.strokeStyle = c.color;
+          ctx.moveTo(c.x + c.tilt + c.r / 4, c.y);
+          ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 4);
+          ctx.stroke();
+        });
+        update();
+      }
+
+      function update() {
+        confetti.forEach(c => {
+          c.tiltAngle += c.tiltAngleIncremental;
+          c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+          c.x += Math.sin(c.d);
+          c.tilt = Math.sin(c.tiltAngle - c.d / 3) * 15;
+
+          if (c.y > canvas.height) {
+            c.y = -10;
+            c.x = Math.random() * canvas.width;
+          }
+        });
+      }
+
+      const interval = setInterval(draw, 20);
+      setTimeout(() => clearInterval(interval), 2000);
+    }
+
+    // Optional: dynamic background every 5s
+    setInterval(() => {
+      document.body.style.backgroundColor = bgColors[Math.floor(Math.random() * bgColors.length)];
+    }, 5000);
   </script>
 </body>
 </html>
