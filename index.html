@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Znajdź Polityka!</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef2f7;
+      text-align: center;
+      transition: background-color 0.5s ease;
+    }
+    h1 {
+      margin-top: 15vh;
+      font-size: 3.5em;
+      color: #1a202c;
+    }
+    #slogan {
+      font-style: italic;
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: #4a5568;
+    }
+    button {
+      font-size: 1.5em;
+      padding: 1em 2em;
+      margin-top: 2em;
+      border: none;
+      border-radius: 15px;
+      background-color: #2563eb;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease, background-color 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      background-color: #1e40af;
+    }
+    #quote {
+      margin-top: 3em;
+      font-size: 1.1em;
+      color: #2d3748;
+    }
+  </style>
+</head>
+<body>
+  <h1>Znajdź Polityka!</h1>
+  <div id="slogan">„Bo kto nie ryzykuje, ten nie zostaje premierem!”</div>
+  <button onclick="redirectToRandomPolitician()">Znajdź Polityka</button>
+
+  <div id="quote"></div>
+
+  <script>
+    const politicians = [
+      "Angela_Merkel", "Barack_Obama", "Donald_Tusk", "Emmanuel_Macron",
+      "Vladimir_Putin", "Joe_Biden", "Andrzej_Duda", "Justin_Trudeau",
+      "Recep_Tayyip_Erdoğan", "Volodymyr_Zelenskyy", "Jacinda_Ardern",
+      "Boris_Johnson", "Marine_Le_Pen", "Bernie_Sanders", "Mateusz_Morawiecki",
+      "Kamala_Harris", "Robert_Biedroń", "Sanna_Marin", "Olaf_Scholz", "Giorgia_Meloni"
+    ];
+
+    const funnyQuotes = [
+      "„To nie ja, to wina poprzedników!”",
+      "„Obiecałem i słowa prawie dotrzymałem!”",
+      "„Mój plan to nie mieć planu!”",
+      "„Nie pytaj co kraj może zrobić dla ciebie, tylko jak się stąd wyprowadzić.”",
+      "„Kampania wyborcza? A to już?”"
+    ];
+
+    const bgColors = ["#fef3c7", "#d1fae5", "#e0e7ff", "#fcd34d", "#fca5a5", "#c4b5fd"];
+
+    function redirectToRandomPolitician() {
+      const randomPolitician = politicians[Math.floor(Math.random() * politicians.length)];
+      const randomQuote = funnyQuotes[Math.floor(Math.random() * funnyQuotes.length)];
+      const randomColor = bgColors[Math.floor(Math.random() * bgColors.length)];
+      
+      document.getElementById("quote").textContent = randomQuote;
+      document.body.style.backgroundColor = randomColor;
+
+      setTimeout(() => {
+        window.location.href = `https://en.wikipedia.org/wiki/${randomPolitician}`;
+      }, 1500); // Daje czas na zobaczenie cytatu i zmianę tła
+    }
+  </script>
+</body>
+</html>
